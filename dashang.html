@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 关键：确保视口适配手机屏幕（保留原有，这是自适应的基础） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 新增：给打赏图片添加自适应样式（核心） */
+      .reward-img {
+        /* 宽度占满父容器的80%（既铺满又留边，更美观） */
+        width: 80%;
+        /* 高度自动适配，保持图片原有比例，不会拉伸变形 */
+        height: auto;
+        /* 图片居中显示 */
+        display: block;
+        margin: 0 auto;
+        /* 可选：限制图片最大宽度，避免在大屏手机上过大 */
+        max-width: 300px;
+      }
+
+      /* 新增：给头像图片也优化自适应（可选） */
+      .avatar-img {
+        width: auto;
+        height: 80px;
+        /* 保证小屏手机头像不会超出容器 */
+        max-height: 80px;
+      }
+    </style>
+  </head>
+  <body
+    style="
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0; /* 新增：给页面上下留边，避免内容贴边 */
+    "
+  >
+    <touxianglan
+      style="
+        width: 100%;
+        height: 120px;
+        background-color: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      "
+    >
+      <!-- 修改：给头像图片加类名，应用自适应样式 -->
+      <img
+        src="https://image2url.com/r2/bucket2/images/1766834845808-15ba5b48-8855-4bbc-8326-7e7468c6cb33.png"
+        alt="logo"
+        class="avatar-img"
+      />
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        "
+      >
+        <p style="margin: 0; font-size: 20px">FREEDOM-个人网站</p>
+        <p style="font-size: 10px; line-height: 1px">(开发阶段，仅内部使用)</p>
+      </div>
+    </touxianglan>
+
+    <da style="width: 100%; text-align: center; margin: 20px 0">
+      <div>
+        <h1 style="margin: 0 0 15px 0; font-size: 1.8rem">感谢打赏</h1>
+        <!-- 修改：给打赏图片加类名，去掉固定宽高，应用自适应样式 -->
+        <img
+          src="https://image2url.com/r2/bucket3/images/1766916309409-d3c61078-1d75-4a72-8307-0da49644c913.png"
+          alt="logo"
+          class="reward-img"
+        />
+      </div>
+    </da>
+
+    <jiewei
+      style="
+        width: 100%;
+        height: 60px;
+        background-color: #eee;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 0;
+        margin-top: 20px; /* 新增：和打赏区域留边 */
+      "
+    >
+      <p style="font-size: 10px">版权</p>
+      <p style="font-size: 10px">备案号</p>
+    </jiewei>
+  </body>
+</html>

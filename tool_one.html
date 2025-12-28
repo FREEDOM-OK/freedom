@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FREEDOM-个人网站-功能一</title>
+    <style>
+      .calculator-container {
+        width: 100%;
+        max-width: 800px;
+        background: white;
+        padding: 5px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* flex布局的间距 */
+        margin: 10px;
+      }
+      .input-group {
+        display: flex;
+        gap: 20px;
+      }
+      .button {
+        padding: 15px;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: 5px;
+      }
+      .time-group {
+        margin: 15px 0;
+        width: 100%;
+      }
+      .input-group input {
+        flex: 1; /* 让输入框平分宽度 */
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+      .button:hover {
+        background-color: #3367d6;
+      }
+      /* 新增：结果显示区域的样式 */
+      .result {
+        margin-top: 8px;
+        font-size: 16px;
+        color: #333;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+      }
+      /* 新增：错误提示样式 */
+      .error {
+        color: #dc3545;
+      }
+      /* 新增：总时长显示区域样式 */
+      .total-result {
+        width: 100%;
+        max-width: 800px;
+        margin: 10px 0;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #28a745; /* 绿色突出显示 */
+        background-color: #f0f8f0;
+        border-radius: 8px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 25px;
+    "
+  >
+    <tou
+      style="
+        width: 100%;
+        height: 120px;
+        background-color: #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      "
+    >
+      <img src="logo.png" alt="头像" width="100" height="100" />
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        "
+      >
+        <p style="margin: 0; font-size: 30px">工具一:</p>
+        <p style="margin: 0; font-size: 20px">时间计算器</p>
+      </div>
+    </tou>
+
+    <shouming class="calculator-container">
+      <div>
+        <p style="font-size: 15px">
+          使用说明：输入样式如：上午8点35写入8:35（或8：35），下午16点55输入16:55（或16：55），输入格式为24小时格式，不可输入12小时格式，中文冒号和英文冒号都支持。
+        </p>
+      </div>
+    </shouming>
+
+    <div id="timeGroupsContainer" style="width: 100%; max-width: 800px">
+      <div class="time-group">
+        <div style="font-size: 20px; line-height: 1.5">
+          <p>1号</p>
+        </div>
+        <div class="input-group">
+          <input type="text" placeholder="第一个时间段" />
+          <input type="text" placeholder="第二时间段" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 总时长显示容器（初始为空，计算后显示） -->
+    <div
+      id="totalResultContainer"
+      class="total-result"
+      style="display: none"
+    ></div>
+
+    <button class="button" id="addBtn">+</button>
+    <button class="button" id="calcBtn">计算</button>
+
+    <jiewei
+      style="
+        width: 100%;
+        height: 60px;
+        background-color: #eee;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 0;
+        margin: 15px;
+      "
+    >
+      <p style="font-size: 10px">版权</p>
+      <p style="font-size: 10px">备案号</p>
+    </jiewei>
+
+    <script>
+      const container = document.getElementById("timeGroupsContainer");
+      const addBtn = document.getElementById("addBtn");
+      const calcBtn = document.getElementById("calcBtn");
+      const totalResultContainer = document.getElementById(
+        "totalResultContainer"
+      );
+      let currentNum = 1;
+
+      // ”+“按钮
+      addBtn.addEventListener("click", function () {
+        currentNum++;
+
+        const newTimeGroup = document.createElement("div");
+        newTimeGroup.className = "time-group"; // 用统一的样式类
+
+        newTimeGroup.innerHTML = `
+          <div style="font-size: 20px; line-height: 1.5">
+            <p>${currentNum}号</p>
+          </div>
+          <div class="input-group">
+            <input type="text" placeholder="第一个时间段" />
+            <input type="text" placeholder="第二时间段" />
+          </div>
+        `;
+
+        container.appendChild(newTimeGroup);
+      });
+
+      // 时间段转分钟的工具函数（支持中文冒号和英文冒号）
+      function timeToMinutes(timeStr) {
+        if (!timeStr.trim()) return 0;
+        // 核心修改：先把中文冒号替换成英文冒号，再分割
+        const normalizedStr = timeStr.replace("：", ":"); // 把中文冒号→英文冒号
+        const parts = normalizedStr.split(":"); // 统一按英文冒号分割
+
+        // 验证格式是否正确（必须是xx:xx格式）
+        if (parts.length !== 2) return -1;
+        const hours = parseInt(parts[0]);
+        const minutes = parseInt(parts[1]);
+        if (
+          isNaN(hours) ||
+          isNaN(minutes) ||
+          hours < 0 ||
+          hours > 23 ||
+          minutes < 0 ||
+          minutes > 59
+        ) {
+          return -1;
+        }
+        return hours * 60 + minutes;
+      }
+
+      // 分钟转时分的工具函数
+      function minutesToTime(minutes) {
+        if (minutes <= 0) return "0小时0分钟";
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours}小时${mins}分钟`;
+      }
+
+      // ”计算“按钮
+      calcBtn.addEventListener("click", function () {
+        const allTimeGroups = document.querySelectorAll(".time-group");
+        let totalMinutes = 0; // 初始化总时长
+
+        allTimeGroups.forEach((group, index) => {
+          const inputs = group.querySelectorAll("input");
+          const time1 = inputs[0].value;
+          const time2 = inputs[1].value;
+
+          const mins1 = timeToMinutes(time1);
+          const mins2 = timeToMinutes(time2);
+
+          // 移除旧结果
+          const oldResult = group.querySelector(".result");
+          if (oldResult) oldResult.remove();
+
+          // 创建结果元素
+          const resultEl = document.createElement("div");
+          resultEl.className = "result";
+
+          // 验证输入
+          if (mins1 === -1 || mins2 === -1) {
+            resultEl.textContent = `${
+              index + 1
+            }号：输入格式错误！请按xx:xx或xx：xx格式输入`;
+            resultEl.classList.add("error");
+          } else {
+            const diff = Math.abs(mins2 - mins1);
+            resultEl.textContent = `${index + 1}号：${minutesToTime(diff)}`;
+            totalMinutes += diff; // 累加有效时长
+          }
+
+          group.appendChild(resultEl);
+        });
+
+        // 显示总时长
+        totalResultContainer.style.display = "block";
+        totalResultContainer.textContent = `总时长：${minutesToTime(
+          totalMinutes
+        )}`;
+      });
+    </script>
+  </body>
+</html>

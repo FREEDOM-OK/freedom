@@ -9,7 +9,7 @@
         width: 100%;
         max-width: 800px;
         background: white;
-        padding: 5px;
+        padding: 6px;
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         display: flex;
@@ -37,8 +37,8 @@
         width: 100%;
       }
       .input-group input {
-        flex: 1; /* 让输入框平分宽度 */
-        padding: 10px;
+        width: 45%; /* 每个输入框占父容器的45%（父容器有20px间隙，刚好占满） */
+        padding: 15px 10px; /* 上下15px（变高），左右10px */
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 1rem;
@@ -112,7 +112,7 @@
     <shouming class="calculator-container">
       <div>
         <p style="font-size: 15px">
-          使用说明：输入样式如：上午8点35写入8:35（或8：35），下午16点55输入16:55（或16：55），输入格式为24小时格式，不可输入12小时格式，中文冒号和英文冒号都支持。
+          使用说明：输入样式如上午8点35写入8:35（或8：35），下午16点55输入16:55（或16：55），输入格式为24小时格式，不可输入12小时格式，中文冒号和英文冒号都支持。不输入不计入计算。
         </p>
       </div>
     </shouming>

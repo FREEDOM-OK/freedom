@@ -12,13 +12,10 @@
         display: flex;
         align-items: center;
       }
-      .full-img {
-        width: 100%; /* 宽度占满父容器 */
-        height: auto; /* 高度自动适配，保持宽高比 */
-        /* 或者需要强制铺满时用 */
-        /* width: 1242px; */
-        /* height: 1692px; */
-        /* object-fit: cover;  防止拉伸，裁剪多余部分 */
+      .limit-access {
+        color: #00a1d6; /* 蓝色突出 */
+        cursor: pointer; /* 鼠标移上去变手型 */
+        text-decoration: underline; /* 下划线提示可点击 */
       }
     </style>
   </head>
@@ -78,6 +75,9 @@
       </p>
       <p class="heizi">工具二：<a href="https://www.doubao.com/">豆包</a></p>
       <p class="heizi">
+        工具三：<span id="limitAccess" class="limit-access">限时访问</span>
+      </p>
+      <p class="heizi">
         特殊工具：<a href="https://freedom-ok.github.io/freedom/dashang"
           >打赏</a
         >
@@ -98,5 +98,25 @@
       <p style="font-size: 10px">版权</p>
       <p style="font-size: 10px">备案号</p>
     </jiewei>
+
+    <script>
+      const limitAccess = document.getElementById("limitAccess");
+
+      // 给文字绑定点击事件
+      limitAccess.addEventListener("click", function () {
+        const password = prompt("请输入访问密钥：", "");
+
+        // 判断用户是否取消输入
+        if (password === null) {
+          return;
+        }
+
+        if (password === "0612") {
+          window.location.href = "https://www.bilibili.com/";
+        } else {
+          alert("密码错误，请重新输入！");
+        }
+      });
+    </script>
   </body>
 </html>

@@ -10,7 +10,15 @@
       }
       .heizi {
         display: flex;
-        align-items: center; /* 文字居中对齐 */
+        align-items: center;
+      }
+      .full-img {
+        width: 100%; /* 宽度占满父容器 */
+        height: auto; /* 高度自动适配，保持宽高比 */
+        /* 或者需要强制铺满时用 */
+        /* width: 1242px; */
+        /* height: 1692px; */
+        /* object-fit: cover;  防止拉伸，裁剪多余部分 */
       }
     </style>
   </head>
@@ -64,13 +72,16 @@
       "
     >
       <p class="heizi">
-        工具一：<a href="Https://www.doubao.com">豆包</a>(网址直达)
+        工具一：<a href="https://freedom-ok.github.io/freedom/tool_one"
+          >时间计算器</a
+        >(网址直达)
       </p>
+      <p class="heizi">工具二：<a href="https://www.doubao.com/">豆包</a></p>
       <p class="heizi">
-        工具二：<a href="https://chat.deepseek.com">DeepSeek</a>(网址直达)
+        特殊工具：<a href="https://freedom-ok.github.io/freedom/dashang"
+          >打赏</a
+        >
       </p>
-      <p class="heizi">工具三：等待更新</p>
-      <p class="heizi">工具四：等待更新</p>
     </neirong>
 
     <jiewei

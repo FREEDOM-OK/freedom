@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 核心移动端适配：设置视口，禁止缩放，适配设备宽度 -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>密码验证跳转</title>
+    <style>
+      /* 初始化样式，清除默认边距和点击高亮 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        /* 移动端全屏居中布局 */
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+          "Helvetica Neue", sans-serif;
+      }
+
+      /* 适配移动端的按钮样式 */
+      .confirm-btn {
+        /* 响应式尺寸：基于视口宽度设置，适配不同手机 */
+        padding: 12vw 20vw;
+        font-size: 5vw; /* 相对单位，随屏幕宽度自适应 */
+        background-color: #00a1d6;
+        color: white;
+        border: none;
+        border-radius: 8vw; /* 圆角也适配移动端 */
+        cursor: pointer;
+        /* 点击反馈 */
+        transition: background-color 0.2s ease;
+        /* 防止按钮文字换行 */
+        white-space: nowrap;
+      }
+
+      .confirm-btn:hover {
+        background-color: #00b5e9;
+      }
+
+      /* 点击时的按压效果 */
+      .confirm-btn:active {
+        background-color: #0088b5;
+        transform: scale(0.98);
+      }
+
+      /* 针对大屏手机/平板的优化 */
+      @media (min-width: 400px) {
+        .confirm-btn {
+          padding: 16px 32px;
+          font-size: 18px;
+          border-radius: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="confirm-btn" id="confirmBtn">确定</button>
+
+    <script>
+      // 获取按钮元素
+      const confirmBtn = document.getElementById("confirmBtn");
+
+      // 为按钮绑定点击事件
+      confirmBtn.addEventListener("click", function () {
+        // 弹出密码输入框，适配移动端的提示文案
+        const password = prompt("请输入密码：", "");
+
+        // 先判断用户是否取消输入
+        if (password === null) {
+          alert("你取消了密码输入");
+          return;
+        }
+
+        // 验证密码
+        if (password === "123") {
+          // 密码正确，跳转B站（移动端会自动跳转到B站移动端页面）
+          window.location.href = "https://www.bilibili.com/";
+        } else {
+          // 密码错误，提示并清空输入框（重新弹出）
+          alert("密码错误，请重新输入！");
+        }
+      });
+    </script>
+  </body>
+</html>

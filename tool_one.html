@@ -44,6 +44,7 @@
       .time-group {
         margin: 15px 0;
         width: 100%;
+        max-width: 800px;
         border: 1px solid #eee;
         padding: 10px;
         border-radius: 8px;
@@ -154,15 +155,24 @@
       </div>
     </shouming>
 
-    <div id="timeGroupsContainer" style="width: 100%; max-width: 800px">
+    <div
+      id="timeGroupsContainer"
+      style="
+        width: 100%;
+        max-width: 800px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
       <div class="time-group">
         <div class="date-title">
           <p>1号</p>
           <button class="button add-input-btn">+ 添加时间段</button>
         </div>
         <div class="input-group">
-          <input type="text" placeholder="第一个时间段" />
-          <input type="text" placeholder="第二时间段" />
+          <input type="text" placeholder="开始时间" />
+          <input type="text" placeholder="结束时间" />
         </div>
       </div>
     </div>
@@ -215,8 +225,8 @@
             <button class="button add-input-btn">+ 添加时间段</button>
           </div>
           <div class="input-group">
-            <input type="text" placeholder="第一个时间段" />
-            <input type="text" placeholder="第二时间段" />
+            <input type="text" placeholder="开始时间" />
+            <input type="text" placeholder="结束时间" />
           </div>
         `;
 
@@ -239,8 +249,8 @@
           const newInputGroup = document.createElement("div");
           newInputGroup.className = "input-group";
           newInputGroup.innerHTML = `
-            <input type="text" placeholder="第一个时间段" />
-            <input type="text" placeholder="第二时间段" />
+            <input type="text" placeholder="开始时间" />
+            <input type="text" placeholder="结束时间" />
           `;
 
           // 插入到最后一个输入组的下方
@@ -363,3 +373,5 @@
     </script>
   </body>
 </html>
+</html>
+

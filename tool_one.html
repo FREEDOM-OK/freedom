@@ -20,6 +20,7 @@
       .input-group {
         display: flex;
         gap: 20px;
+        margin-bottom: 10px; /* 输入组之间增加间距 */
       }
       .button {
         padding: 15px;
@@ -32,9 +33,20 @@
         transition: background-color 0.3s;
         margin: 5px;
       }
+      /* 新增时间段按钮样式 */
+      .add-input-btn {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        background-color: #28a745;
+        border-radius: 6px;
+        margin-left: 10px;
+      }
       .time-group {
         margin: 15px 0;
         width: 100%;
+        border: 1px solid #eee;
+        padding: 10px;
+        border-radius: 8px;
       }
       .input-group input {
         width: 45%; /* 每个输入框占父容器的45%（父容器有20px间隙，刚好占满） */
@@ -46,20 +58,34 @@
       .button:hover {
         background-color: #3367d6;
       }
-      /* 新增：结果显示区域的样式 */
-      .result {
+      .add-input-btn:hover {
+        background-color: #218838;
+      }
+      /* 各组时长结果样式（字体更小） */
+      .group-result {
         margin-top: 8px;
-        font-size: 16px;
+        font-size: 14px; /* 减小组时长字体 */
         color: #333;
-        padding: 8px;
+        padding: 6px 8px;
         border-radius: 4px;
         background-color: #f8f9fa;
       }
-      /* 新增：错误提示样式 */
+      /* 日期小计样式（区分于组时长） */
+      .group-summary {
+        margin-top: 10px;
+        font-size: 16px; /* 比组时长字体大 */
+        font-weight: bold; /* 加粗 */
+        color: #2c3e50;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #e8f4e8; /* 浅绿背景 */
+        border: 1px solid #c3e6c3;
+      }
+      /* 错误提示样式 */
       .error {
         color: #dc3545;
       }
-      /* 新增：总时长显示区域样式 */
+      /* 总时长显示区域样式 */
       .total-result {
         width: 100%;
         max-width: 800px;
@@ -71,6 +97,17 @@
         background-color: #f0f8f0;
         border-radius: 8px;
         text-align: center;
+      }
+      /* 日期标题行样式 */
+      .date-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .date-title p {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.5;
       }
     </style>
   </head>
@@ -119,8 +156,9 @@
 
     <div id="timeGroupsContainer" style="width: 100%; max-width: 800px">
       <div class="time-group">
-        <div style="font-size: 20px; line-height: 1.5">
+        <div class="date-title">
           <p>1号</p>
+          <button class="button add-input-btn">+ 添加时间段</button>
         </div>
         <div class="input-group">
           <input type="text" placeholder="第一个时间段" />
@@ -136,7 +174,7 @@
       style="display: none"
     ></div>
 
-    <button class="button" id="addBtn">+</button>
+    <button class="button" id="addBtn">+ 添加日期</button>
     <button class="button" id="calcBtn">计算</button>
 
     <jiewei
@@ -164,16 +202,17 @@
       );
       let currentNum = 1;
 
-      // ”+“按钮
+      // “添加日期”按钮逻辑
       addBtn.addEventListener("click", function () {
         currentNum++;
 
         const newTimeGroup = document.createElement("div");
-        newTimeGroup.className = "time-group"; // 用统一的样式类
+        newTimeGroup.className = "time-group";
 
         newTimeGroup.innerHTML = `
-          <div style="font-size: 20px; line-height: 1.5">
+          <div class="date-title">
             <p>${currentNum}号</p>
+            <button class="button add-input-btn">+ 添加时间段</button>
           </div>
           <div class="input-group">
             <input type="text" placeholder="第一个时间段" />
@@ -182,7 +221,35 @@
         `;
 
         container.appendChild(newTimeGroup);
+        // 为新添加的日期绑定“添加时间段”按钮事件
+        bindAddInputBtnEvent(newTimeGroup.querySelector(".add-input-btn"));
       });
+
+      // 绑定“添加时间段”按钮的点击事件（添加到最后一个输入框下方）
+      function bindAddInputBtnEvent(btn) {
+        btn.addEventListener("click", function () {
+          // 获取当前按钮所在的time-group容器
+          const timeGroup = this.closest(".time-group");
+          // 获取该日期下所有的输入组
+          const allInputGroups = timeGroup.querySelectorAll(".input-group");
+          // 取最后一个输入组
+          const lastInputGroup = allInputGroups[allInputGroups.length - 1];
+
+          // 创建新的输入组
+          const newInputGroup = document.createElement("div");
+          newInputGroup.className = "input-group";
+          newInputGroup.innerHTML = `
+            <input type="text" placeholder="第一个时间段" />
+            <input type="text" placeholder="第二时间段" />
+          `;
+
+          // 插入到最后一个输入组的下方
+          lastInputGroup.after(newInputGroup);
+        });
+      }
+
+      // 初始化绑定第一个日期的“添加时间段”按钮事件
+      bindAddInputBtnEvent(document.querySelector(".add-input-btn"));
 
       // 时间段转分钟的工具函数（支持中文冒号和英文冒号）
       function timeToMinutes(timeStr) {
@@ -216,40 +283,75 @@
         return `${hours}小时${mins}分钟`;
       }
 
-      // ”计算“按钮
+      // “计算”按钮逻辑（核心优化：结果插入位置）
       calcBtn.addEventListener("click", function () {
         const allTimeGroups = document.querySelectorAll(".time-group");
         let totalMinutes = 0; // 初始化总时长
 
         allTimeGroups.forEach((group, index) => {
-          const inputs = group.querySelectorAll("input");
-          const time1 = inputs[0].value;
-          const time2 = inputs[1].value;
+          // 移除当前日期下所有旧结果（先清空，避免重复）
+          const oldResults = group.querySelectorAll(
+            ".group-result, .group-summary"
+          );
+          oldResults.forEach((res) => res.remove());
 
-          const mins1 = timeToMinutes(time1);
-          const mins2 = timeToMinutes(time2);
+          let groupTotal = 0; // 单个日期的总时长
+          let hasError = false; // 标记当前日期是否有输入错误
+          const inputGroups = group.querySelectorAll(".input-group");
+          let lastResultEl = null; // 记录最后一个组结果的位置
 
-          // 移除旧结果
-          const oldResult = group.querySelector(".result");
-          if (oldResult) oldResult.remove();
+          // 遍历当前日期下的所有输入组，结果紧跟对应输入框
+          inputGroups.forEach((inputGroup, inputIndex) => {
+            const inputs = inputGroup.querySelectorAll("input");
+            const time1 = inputs[0].value;
+            const time2 = inputs[1].value;
 
-          // 创建结果元素
-          const resultEl = document.createElement("div");
-          resultEl.className = "result";
+            const mins1 = timeToMinutes(time1);
+            const mins2 = timeToMinutes(time2);
 
-          // 验证输入
-          if (mins1 === -1 || mins2 === -1) {
-            resultEl.textContent = `${
-              index + 1
-            }号：输入格式错误！请按xx:xx或xx：xx格式输入`;
-            resultEl.classList.add("error");
-          } else {
-            const diff = Math.abs(mins2 - mins1);
-            resultEl.textContent = `${index + 1}号：${minutesToTime(diff)}`;
-            totalMinutes += diff; // 累加有效时长
+            // 验证输入
+            if (mins1 === -1 || mins2 === -1) {
+              hasError = true;
+              const errorEl = document.createElement("div");
+              errorEl.className = "group-result error";
+              errorEl.textContent = `${index + 1}号 第${
+                inputIndex + 1
+              }组：输入格式错误！请按xx:xx或xx：xx格式输入`;
+              // 结果插入到当前输入组的正下方
+              inputGroup.after(errorEl);
+              lastResultEl = errorEl; // 更新最后一个结果位置
+            } else {
+              const diff = Math.abs(mins2 - mins1);
+              groupTotal += diff;
+              const resultEl = document.createElement("div");
+              resultEl.className = "group-result";
+              resultEl.textContent = `${index + 1}号 第${
+                inputIndex + 1
+              }组：${minutesToTime(diff)}`;
+              // 结果插入到当前输入组的正下方
+              inputGroup.after(resultEl);
+              lastResultEl = resultEl; // 更新最后一个结果位置
+            }
+          });
+
+          // 显示当前日期的小计：插入到最后一个组结果的正下方
+          if (inputGroups.length > 0 && lastResultEl) {
+            const groupSummary = document.createElement("div");
+            groupSummary.className = "group-summary";
+            if (hasError) {
+              groupSummary.textContent = `${
+                index + 1
+              }号 总计：格式错误，不计入总时长`;
+              groupSummary.classList.add("error");
+            } else {
+              groupSummary.textContent = `${index + 1}号 总计：${minutesToTime(
+                groupTotal
+              )}`;
+              totalMinutes += groupTotal; // 累加有效时长到总时长
+            }
+            // 总计插入到最后一个组结果的下方
+            lastResultEl.after(groupSummary);
           }
-
-          group.appendChild(resultEl);
         });
 
         // 显示总时长
